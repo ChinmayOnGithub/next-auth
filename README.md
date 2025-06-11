@@ -1,1 +1,0 @@
-### Auth app on Nextjs
