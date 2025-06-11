@@ -64,33 +64,37 @@ export default function SignUpPage() {
 		<div className="flex flex-col items-center justify-center min-h-screen bg-gray-900">
 			<h1 className="text-white">Sign Up</h1>
 			<hr />
-			<label className="text-white mt-4">
-				Username:
-				<input
-					type="text"
-					className="ml-2 p-2 rounded bg-gray-800 text-white"
-					value={user.username}
-					onChange={(e) => setUser({ ...user, username: e.target.value })}
-				/>
-			</label>
-			<label className="text-white mt-4">
-				Email:
-				<input
-					type="email"
-					className="ml-2 p-2 rounded bg-gray-800 text-white"
-					value={user.email}
-					onChange={(e) => setUser({ ...user, email: e.target.value })}
-				/>
-			</label>
-			<label className="text-white mt-4">
-				Password:
-				<input
-					type="password"
-					className="ml-2 p-2 rounded bg-gray-800 text-white"
-					value={user.password}
-					onChange={(e) => setUser({ ...user, password: e.target.value })}
-				/>
-			</label>
+			<div className="w-fit max-w-md py-8 px-4  mt-3 flex flex-col bg-gray-950 rounded">
+				<label className="text-white">
+					Username:
+					<input
+						type="text"
+						className="w-full p-2 rounded bg-gray-800 text-white"
+						value={user.username}
+						onChange={(e) => setUser({ ...user, username: e.target.value })}
+					/>
+				</label>
+				<br />
+				<label className="text-white mt-4">
+					Email:
+					<input
+						type="email"
+						className="w-full p-2 rounded bg-gray-800 text-white"
+						value={user.email}
+						onChange={(e) => setUser({ ...user, email: e.target.value })}
+					/>
+				</label>
+				<br />
+				<label className="text-white mt-4">
+					Password:
+					<input
+						type="password"
+						className="w-full p-2 rounded bg-gray-800 text-white"
+						value={user.password}
+						onChange={(e) => setUser({ ...user, password: e.target.value })}
+					/>
+				</label>
+			</div>
 			<button
 				className="mt-4 bg-blue-600 text-white p-2 rounded"
 				onClick={onSignUp}
