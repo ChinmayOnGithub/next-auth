@@ -4,8 +4,11 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "react-hot-toast";
 import axios from "axios";
+import { useState, useEffect } from "react";
 
 export default function ProfilePage() {
+  const [userData, setUserData] = useState(null);
+
   const router = useRouter();
 
   const logout = async () => {
@@ -19,9 +22,36 @@ export default function ProfilePage() {
     }
   };
 
+  const getUserData = async () => {
+    try {
+      const response = await axios.get("/api/users/me");
+      console.log("User data:", response.data);
+      setUserData(response.data.user);
+      toast.success("User data fetched successfully");
+
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+      toast.error("Failed to fetch user data.");
+    }
+  };
+
+  useEffect(() => {
+    getUserData();
+  }, []);
+
+
+
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-900">
       <h1 className="text-white">Profile</h1>
+      <p>
+        {userData ? (
+          <span className="text-green-400">Welcome, {userData?.email}!</span>
+        ) : (
+          <span className="text-red-400">Loading user data...</span>
+        )}
+        <br />
+      </p>
       <hr />
       <p className="text-white mt-4">This is the profile page.</p>
 
