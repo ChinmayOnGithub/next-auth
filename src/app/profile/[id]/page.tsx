@@ -1,13 +1,10 @@
 import React from "react";
+import { useRouter } from "next/router";
 
-interface PageProps {
-  params: {
-    id: string;
-  };
-}
+const ParamterProfilePage = () => {
+  const router = useRouter();
+  const { id } = router.query;
 
-// Must be an async function — even if you're not fetching anything *yet*
-export default async function ParamterProfilePage({ params }: PageProps) {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-900 text-xl">
       <h1 className="text-white">Profile</h1>
@@ -15,9 +12,11 @@ export default async function ParamterProfilePage({ params }: PageProps) {
       <p className="text-white mt-4">
         This is the profile of
         <span className="bg-orange-500 text-black p-2 ml-2 rounded-sm font-bold">
-          {params.id}
+          {id}
         </span>
       </p>
     </div>
   );
-}
+};
+
+export default ParamterProfilePage;
