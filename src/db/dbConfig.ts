@@ -1,14 +1,18 @@
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 dotenv.config();
-// Ensure that the environment variable is set
-if (!process.env.MONGODB_URI) {
-  throw new Error("MONGODB_URI is not defined in the environment variables");
+
+// Ensure that the environment variables are set
+if (!process.env.MONGODB_URI || !process.env.MONGODB_DB_NAME) {
+  throw new Error("MONGODB_URI or MONGODB_DB_NAME is not defined in the environment variables");
 }
 
 export async function connectToDatabase() {
   try {
-    mongoose.connect(process.env.MONGODB_URI!);
+    const uri = process.env.MONGODB_URI!.replace(/\/$/, ''); // Remove trailing slash if present
+    await mongoose.connect(uri, {
+      dbName: process.env.MONGODB_DB_NAME
+    });
     const connection = mongoose.connection;
 
     connection.on("connected", () => {
@@ -22,3 +26,4 @@ export async function connectToDatabase() {
     console.error("Error connecting to the database:", error);
   }
 }
+
