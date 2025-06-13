@@ -1,10 +1,9 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import toast from "react-hot-toast";
-import { useEffect } from "react";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -14,73 +13,93 @@ export default function LoginPage() {
   });
   const [buttonDisabled, setButtonDisabled] = React.useState(true);
   const [loading, setLoading] = React.useState(false);
+  const [error, setError] = React.useState("");
+  const [hasMounted, setHasMounted] = React.useState(false);
+  useEffect(() => {
+    setHasMounted(true);
+  }, []);
+
 
   useEffect(() => {
-    if (user.email.length > 0 && user.password.length > 0) {
-      setButtonDisabled(false);
-    } else {
-      setButtonDisabled(true);
-    }
-  }, [user.email, user.password]);
+    setButtonDisabled(!(user.email.length > 0 && user.password.length > 0));
+  }, [user]);
 
-  const onLogin = async () => {
+  const onLogin = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     try {
       setLoading(true);
       const response = await axios.post("/api/users/login", user);
+
       if (response.data?.error) {
+        setError(response.data.error);
         toast.error(response.data.error);
         return;
       }
+
       toast.success("User logged in successfully!");
       router.push("/profile");
     } catch (error: any) {
-      if (axios.isAxiosError(error)) {
-        toast.error(error.response?.data?.error || "Login failed");
-      } else {
-        toast.error("An unexpected error occurred");
-      }
+      const errMsg =
+        axios.isAxiosError(error) && error.response?.data?.error
+          ? error.response.data.error
+          : "An unexpected error occurred";
+      setError(errMsg);
+      toast.error(errMsg);
     } finally {
       setLoading(false);
     }
   };
 
+  if (!hasMounted) {
+    return null;
+  }
+
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-900">
-      <h1 className="text-white">Log In</h1>
-      <hr />
-      <label className="text-white mt-4">
-        Email:
-        <input
-          type="email"
-          className="ml-2 p-2 rounded bg-gray-800 text-white"
-          value={user.email}
-          onChange={(e) => setUser({ ...user, email: e.target.value })}
-          placeholder="Enter your email"
-        />
-      </label>
-      <label className="text-white mt-4">
-        Password:
-        <input
-          type="password"
-          className="ml-2 p-2 rounded bg-gray-800 text-white"
-          value={user.password}
-          onChange={(e) => setUser({ ...user, password: e.target.value })}
-          placeholder="Enter your password"
-        />
-      </label>
-      <button
-        className="mt-4 bg-blue-600 text-white p-2 rounded"
-        disabled={buttonDisabled}
-        onClick={onLogin}
+      <h1 className="text-white text-4xl font-bold">Log In</h1>
+      <form
+        onSubmit={onLogin}
+        className="w-full max-w-md p-8 mt-4 bg-gray-800 rounded-lg"
       >
-        {loading ? "Loading..." : "Log In"}
-      </button>
-      <p className="text-white mt-4">
-        Dont have an account?{" "}
-        <Link href="/signup" className="text-blue-400">
-          Sign Up
-        </Link>
-      </p>
+        <label className="block mb-2 text-white">
+          Email:
+          <input
+            type="email"
+            className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+            value={user.email}
+            onChange={(e) => setUser({ ...user, email: e.target.value })}
+            placeholder="Enter your email"
+            required
+          />
+        </label>
+        <label className="block mb-2 text-white">
+          Password:
+          <input
+            type="password"
+            className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+            value={user.password}
+            onChange={(e) => setUser({ ...user, password: e.target.value })}
+            placeholder="Enter your password"
+            required
+          />
+        </label>
+        <button
+          type="submit"
+          className="w-full px-4 py-2 mt-4 text-white bg-blue-600 rounded-md hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+          disabled={buttonDisabled}
+        >
+          {loading ? "Loading..." : "Log In"}
+        </button>
+        <p className="mt-4 text-white text-center">
+          Don’t have an account?{" "}
+          <Link href="/signup" className="text-blue-400 hover:underline">
+            Sign Up
+          </Link>
+        </p>
+        {hasMounted && error && (
+          <p className="mt-4 text-red-500 text-center">{error}</p>
+        )}
+      </form>
     </div>
   );
 }
