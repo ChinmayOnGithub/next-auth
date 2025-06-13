@@ -22,16 +22,26 @@ export default function ProfilePage() {
     }
   };
 
+  let hasShownToast = false;
+
   const getUserData = async () => {
     try {
       const response = await axios.get("/api/users/me");
       console.log("User data:", response.data);
       setUserData(response.data.user);
-      toast.success("User data fetched successfully");
+
+      if (!hasShownToast) {
+        toast.success("User data fetched successfully");
+        hasShownToast = true;
+      }
 
     } catch (error) {
       console.error("Error fetching user data:", error);
-      toast.error("Failed to fetch user data.");
+
+      if (!hasShownToast) {
+        toast.error("Failed to fetch user data.");
+        hasShownToast = true;
+      }
     }
   };
 
@@ -39,19 +49,33 @@ export default function ProfilePage() {
     getUserData();
   }, []);
 
-
-
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-900">
       <h1 className="text-white">Profile</h1>
-      <p>
+      <div className="text-center mt-4">
         {userData ? (
           <span className="text-green-400">Welcome, {userData?.email}!</span>
         ) : (
           <span className="text-red-400">Loading user data...</span>
         )}
         <br />
-      </p>
+        {userData && (
+          userData.isVerified ? (
+            <span className="text-orange-400"> Your email is verified.</span>
+          ) : (
+            <div>
+              <span className="text-red-400"> Your email is not verified. </span>
+              <span className="text-blue-400"
+              >verify</span>
+            </div>
+          )
+        )}
+        <br />
+        {userData && userData.isAdmin && (
+          <span className="text-blue-400">admin.</span>
+        )}
+        <br />
+      </div>
       <hr />
       <p className="text-white mt-4">This is the profile page.</p>
 
