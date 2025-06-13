@@ -1,13 +1,13 @@
 import React from "react";
 
-// Define the proper props type explicitly
 interface PageProps {
   params: {
     id: string;
   };
 }
 
-export default function ParamterProfilePage({ params }: PageProps) {
+// Must be an async function — even if you're not fetching anything *yet*
+export default async function ParamterProfilePage({ params }: PageProps) {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-900 text-xl">
       <h1 className="text-white">Profile</h1>
