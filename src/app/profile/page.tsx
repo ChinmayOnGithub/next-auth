@@ -54,13 +54,13 @@ export default function ProfilePage() {
       <h1 className="text-white">Profile</h1>
       <div className="text-center mt-4">
         {userData ? (
-          <span className="text-green-400">Welcome, {userData?.email}!</span>
+          <span className="text-green-400">Welcome, {(userData as any)?.email}!</span>
         ) : (
           <span className="text-red-400">Loading user data...</span>
         )}
         <br />
         {userData && (
-          userData.isVerified ? (
+          (userData as any).isVerified ? (
             <span className="text-orange-400"> Your email is verified.</span>
           ) : (
             <div>
@@ -71,7 +71,7 @@ export default function ProfilePage() {
           )
         )}
         <br />
-        {userData && userData.isAdmin && (
+        {userData && (userData as any).isAdmin && (
           <span className="text-blue-400">admin.</span>
         )}
         <br />

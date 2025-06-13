@@ -1,9 +1,11 @@
+"use client";
+
 import React from "react";
-import { useRouter } from "next/router";
+import { useSearchParams } from "next/navigation";
 
 const ParamterProfilePage = () => {
-  const router = useRouter();
-  const { id } = router.query;
+  const searchParams = useSearchParams();
+  const id = searchParams.get("id");
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-900 text-xl">
@@ -20,3 +22,4 @@ const ParamterProfilePage = () => {
 };
 
 export default ParamterProfilePage;
+
